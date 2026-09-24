@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Miroir CSS des tokens Tailwind, utile pour les dégradés et les SVG inline */
+    --saphir: #1a365d;
+    --saphir-clair: #2a4a78;
+    --saphir-profond: #112038;
+    --sarcelle: #0d9488;
+    --sarcelle-clair: #2bc3b6;
+    --sarcelle-profond: #0b7c73;
+    --brume: #f8fafc;
+    --ardoise: #0f172a;
+    --regle: rgba(148, 163, 184, 0.28); /* couleur des filets de séparation */
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    /* Texte de lecture en encre neutre — plus la moindre dominante bleue. */
+    @apply bg-brume font-sans text-encre-950 antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Sélection de texte neutre : le système noir & blanc ne doit pas
+     réintroduire une couleur de marque sur un geste aussi fréquent. */
+  ::selection {
+    @apply bg-encre-950 text-white;
+  }
+
+  /* Le focus reste le seul endroit où la couleur de marque sert de repère
+     fonctionnel permanent — un « petit détail », au sens de la nouvelle
+     direction, jamais un aplat. */
+  :focus-visible {
+    outline: 2px solid var(--sarcelle);
+    outline-offset: 3px;
+  }
+
+  /* Le curseur personnalisé ne remplace le pointeur que sur les écrans fins */
+  @media (hover: hover) and (pointer: fine) {
+    body.cursor-custom,
+    body.cursor-custom * {
+      cursor: none;
+    }
+  }
+}
+
+@layer components {
+  /* Conteneur principal du site */
+  .shell {
+    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14;
+  }
+
+  /* Filet technique fin, repris des plans d'exécution */
+  .filet {
+    @apply h-px w-full bg-[var(--regle)];
+  }
+
+  /* Cadre d'épure : coins marqués comme sur un cartouche de plan */
+  .cartouche {
+    position: relative;
+  }
+  .cartouche::before,
+  .cartouche::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: currentColor;
+    opacity: 0.45;
+  }
+  .cartouche::before {
+    top: 0;
+    left: 0;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+  .cartouche::after {
+    bottom: 0;
+    right: 0;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+  }
+
+  .chiffre-tabulaire {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+}
+
+/* SlideTabs sur mobile : défilement horizontal possible, barre masquée */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Masque de dégradé pour le bandeau de logos en défilement */
+.masque-lateral {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/*
+ * Shader 3 — Core Glow (fond blanc : À propos/Réalisations/Contact).
+ * Dégradé radial CSS pur, statique par nature — aucune dépendance JS, pas
+ * concerné par `prefers-reduced-motion`. Recopié tel quel depuis le prompt.
+ */
+.gradient-core-glow {
+  background-color: #808080;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.080'/></svg>"),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.016) 100%),
+    radial-gradient(circle at 48% 56%, #111111 0%, #f2f2f2 0%, #808080 80%);
+  background-size: 120px 120px, auto, auto;
+  background-blend-mode: overlay, normal, normal;
+}
+
+/* Accessibilité : toutes les animations tombent en statique */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
